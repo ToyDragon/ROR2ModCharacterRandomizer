@@ -1,45 +1,29 @@
-﻿using Harmony;
+﻿using BepInEx;
 using RoR2;
-using System;
-using System.Reflection;
-using UnityModManagerNet;
 
 namespace Frogtown
 {
-    public class CharacterRandomizerOverhaul
+    [BepInDependency("com.frogtown.shared")]
+    [BepInDependency("com.frogtown.healinghelper", BepInDependency.DependencyFlags.SoftDependency)] //Make sure this respawn postfix runs after the healing helper postfix
+    [BepInPlugin("com.frogtown.characterrandomizer", "Character Randomizer", "1.0")]
+    public class CharacterRandomizerOverhaul : BaseUnityPlugin
     {
-        public static bool enabled;
-        public static UnityModManager.ModEntry modEntry;
+        public ModDetails modDetails;
 
-        static bool Load(UnityModManager.ModEntry modEntry)
+        public void Awake()
         {
-            var harmony = HarmonyInstance.Create("com.frog.characterrandomizer");
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
-            CharacterRandomizerOverhaul.modEntry = modEntry;
-            enabled = true;
-            modEntry.OnToggle = OnToggle;
-            return true;
+            modDetails = new ModDetails("com.frogtown.characterrandomizer");
+
+            On.RoR2.Stage.RespawnCharacter += (orig, instance, characterMaster) =>
+            {
+                StageRespawnCharacterPrefix(characterMaster);
+                orig(instance, characterMaster);
+            };
         }
 
-        static bool OnToggle(UnityModManager.ModEntry modEntry, bool value)
+        private void StageRespawnCharacterPrefix(CharacterMaster characterMaster)
         {
-            enabled = value;
-            FrogtownShared.ModToggled(value);
-            return true;
-        }
-    }
-
-    /// <summary>
-    /// Restores the original prefab on stage change.
-    /// </summary>
-    [HarmonyPatch(typeof(RoR2.Stage))]
-    [HarmonyPatch("RespawnCharacter")]
-    [HarmonyPatch(new Type[] { typeof(CharacterMaster) })]
-    class StagePatch
-    {
-        static void Prefix(CharacterMaster characterMaster)
-        {
-            if (!CharacterRandomizerOverhaul.enabled)
+            if (!modDetails.enabled)
             {
                 return;
             }
