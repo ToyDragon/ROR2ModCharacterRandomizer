@@ -4,15 +4,20 @@ using RoR2;
 namespace Frogtown
 {
     [BepInDependency("com.frogtown.shared")]
-    [BepInDependency("com.frogtown.healinghelper", BepInDependency.DependencyFlags.SoftDependency)] //Make sure this respawn postfix runs after the healing helper postfix
-    [BepInPlugin("com.frogtown.characterrandomizer", "Character Randomizer", "1.0")]
+    [BepInPlugin("com.frogtown.characterrandomizer", "Character Randomizer", "1.0.2")]
     public class CharacterRandomizerOverhaul : BaseUnityPlugin
     {
         public ModDetails modDetails;
 
         public void Awake()
         {
-            modDetails = new ModDetails("com.frogtown.characterrandomizer");
+            modDetails = new ModDetails("com.frogtown.characterrandomizer")
+            {
+                description = "Switches the characters of everyone in the party randomly every stage.",
+                githubAuthor = "ToyDragon",
+                githubRepo = "ROR2ModCharacterRandomizer",
+            };
+            FrogtownShared.RegisterMod(modDetails);
 
             On.RoR2.Stage.RespawnCharacter += (orig, instance, characterMaster) =>
             {
