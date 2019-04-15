@@ -4,14 +4,14 @@ using RoR2;
 namespace Frogtown
 {
     [BepInDependency("com.frogtown.shared")]
-    [BepInPlugin("com.frogtown.characterrandomizer", "Character Randomizer", "1.0.2")]
+    [BepInPlugin("com.frogtown.characterrandomizer", "Character Randomizer", "1.0.3")]
     public class CharacterRandomizerOverhaul : BaseUnityPlugin
     {
-        public ModDetails modDetails;
+        public FrogtownModDetails modDetails;
 
         public void Awake()
         {
-            modDetails = new ModDetails("com.frogtown.characterrandomizer")
+            modDetails = new FrogtownModDetails("com.frogtown.characterrandomizer")
             {
                 description = "Switches the characters of everyone in the party randomly every stage.",
                 githubAuthor = "ToyDragon",
