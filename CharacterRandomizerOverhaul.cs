@@ -4,7 +4,7 @@ using RoR2;
 namespace Frogtown
 {
     [BepInDependency("com.frogtown.shared")]
-    [BepInPlugin("com.frogtown.characterrandomizer", "Character Randomizer", "1.0.3")]
+    [BepInPlugin("com.frogtown.characterrandomizer", "Character Randomizer", "1.0.4")]
     public class CharacterRandomizerOverhaul : BaseUnityPlugin
     {
         public FrogtownModDetails modDetails;
@@ -16,8 +16,9 @@ namespace Frogtown
                 description = "Switches the characters of everyone in the party randomly every stage.",
                 githubAuthor = "ToyDragon",
                 githubRepo = "ROR2ModCharacterRandomizer",
+                thunderstoreFullName = "ToyDragon-CharacterRandomizer",
             };
-            FrogtownShared.RegisterMod(modDetails);
+            FrogtownShared.RegisterMod(modDetails); 
 
             On.RoR2.Stage.RespawnCharacter += (orig, instance, characterMaster) =>
             {
