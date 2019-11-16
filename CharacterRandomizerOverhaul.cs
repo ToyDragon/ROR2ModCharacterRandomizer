@@ -3,48 +3,19 @@ using RoR2;
 
 namespace Frogtown
 {
-    [BepInDependency("com.frogtown.shared")]
-    [BepInPlugin("com.frogtown.characterrandomizer", "Character Randomizer", "1.0.4")]
+    [BepInDependency(R2API.R2API.PluginGUID,BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInPlugin("com.IFixYourRoR2Mods.CharacterRandomizer", "CharacterRandomizer","1.0.0")]
     public class CharacterRandomizerOverhaul : BaseUnityPlugin
     {
-        public FrogtownModDetails modDetails;
 
         public void Awake()
         {
-            modDetails = new FrogtownModDetails("com.frogtown.characterrandomizer")
-            {
-                description = "Switches the characters of everyone in the party randomly every stage.",
-                githubAuthor = "ToyDragon",
-                githubRepo = "ROR2ModCharacterRandomizer",
-                thunderstoreFullName = "ToyDragon-CharacterRandomizer",
-            };
-            FrogtownShared.RegisterMod(modDetails); 
-
             On.RoR2.Stage.RespawnCharacter += (orig, instance, characterMaster) =>
             {
-                StageRespawnCharacterPrefix(characterMaster);
+                var newIndex = Random.Range(0, SurvivorCatalog.survivorCount-1);
+                characterMaster.bodyPrefab = ((SurvivorDef[]) SurvivorCatalog.allSurvivorDefs)[newIndex].bodyPrefab;
+
                 orig(instance, characterMaster);
             };
         }
-
-        private void StageRespawnCharacterPrefix(CharacterMaster characterMaster)
-        {
-            if (!modDetails.enabled)
-            {
-                return;
-            }
-
-            string[] prefabNames = new string[]{
-                "CommandoBody",
-                "ToolbotBody",
-                "HuntressBody",
-                "EngiBody",
-                "MageBody",
-                "MercBody"
-            };
-
-            string prefabName = prefabNames[UnityEngine.Random.Range(0, prefabNames.Length)];
-            characterMaster.bodyPrefab = BodyCatalog.FindBodyPrefab(prefabName);
-        }
-    }
 }
